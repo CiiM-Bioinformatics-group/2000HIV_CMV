@@ -1,0 +1,75 @@
+---
+
+project_token: 2000HIV
+project_dir: &base_dir !AsPath ~/Documents/projects/wp_2000hiv
+
+# Singularity image including major tools
+singularity_image: !AsPath ~/Documents/git/singularity_images/gwas.simg
+
+# Genotypes
+genotype_dir: !AsPath [*base_dir, outputs/variants/gsa/]
+genotype_prefix: 2000HIV.all
+
+# Phenotypes and covariables
+phenotype_dir: !AsPath [*base_dir, outputs/phenotypes/cmv_infection/]
+covariate_file: !AsPath [*base_dir, outputs/phenotypes/2000HIV.reduced.covariables.txt]
+
+# Output folder
+output_dir: !AsPath [*base_dir, outputs/associations/cmv_infection/]
+
+# The regression model to use, `logistic` for qualitative trait or `linear` for quantitative trait
+model: logistic
+
+# Summary statistics to generate, gwas for GWAS or setbased for set-based association test
+run_mode:
+  regenie:
+    - gwas
+    - gwas_simple
+    # - setbased
+  plink:
+    - gwas
+    # - setbased
+
+phenotype: 
+  - cmv_infection
+
+partition: # Cohort partitions to work on
+  - all
+  - all_discovery
+  - all_validation
+  - eur
+  - eur_discovery
+  - eur_validation
+
+cat_covars: # Categorical covariates (for regenie)
+  default:
+    - SEX_BIRTH
+    - RISK_BEHAV
+    - SMOKING_CURRENT
+  all:
+    - CENTER
+  all_discovery:
+    - CENTER
+  eur:
+    - CENTER
+  eur_discovery:
+    - CENTER
+
+# Parameters for tools
+params:
+  default:
+    maf: 0.05
+    mac: 10
+  plink: # Plink parameters
+    vif: 400
+  regenie: # Plink parameters
+    max_cat_levels: 10
+    mhc_regions: !AsPath [*base_dir, inputs/genotypes/major_histocompatibility_complex.bed]
+    nlc_regions: !AsPath [*base_dir, inputs/genotypes/notin_low_complexity_region.with_name.bed]
+    aaf_bins: [0.001, 0.005, 0.01, 0.05, 0.1, 0.5]
+      
+
+# Model controlling
+condition_variant: # Model to test SNP conditioning on other SNPs, i.e., using the SNP as a covariate.
+
+interaction_with: # Model to test SNP interaction with other SNPs, i.e., using the SNP as an interaction covariate.
