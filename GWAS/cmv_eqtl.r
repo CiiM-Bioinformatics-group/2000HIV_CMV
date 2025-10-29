@@ -17,6 +17,7 @@ suppressPackageStartupMessages({
   library(DEGreport)
 })
 
+
 # Annotations
 annhub <- AnnotationHub::AnnotationHub()
 ann_db <- AnnotationHub::query(annhub, pattern = c("GRCh38", "EnsDb"))
@@ -118,3 +119,6 @@ if (file.exists(covmat_save_to)) {
 
   covar_mat %>% fwrite(covmat_save_to, sep = "\t")
 }
+
+
+# Genoteypes are available at /vol/projects/BIIM/2000HIV/RareVariants/outputs/variants/gsa/vcf/2000HIV.all.annotated.vcf.gz
